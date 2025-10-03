@@ -1,8 +1,0 @@
-%LC_7
-/*
-practica1
-*/
-
-hombre(adan).
-hombre(eva).
-mortal(X):-hombre(X).

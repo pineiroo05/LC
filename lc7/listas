@@ -32,8 +32,8 @@ izda_der(2,5,[2,5,7]). true
 izq_der(1,2,X) => me genera listas con 1 y 2 seguidas
 */
 
-izq_der(Car1,Car2,[Car1,Car2|Cdr]).
-izq_der(N1,N2,[Car|Cdr]):-izq_der(N1,N2,Cdr).
+izq_der(Car1,Car2,[Car1,Car2|_]).
+izq_der(Car1,Car2,[_|Cdr]):-izq_der(Car1,Car2,Cdr).
 
 /*
 Contigua, igual q el anterior pero habria q hacerlo en los 2 sentidos.

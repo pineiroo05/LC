@@ -1,0 +1,68 @@
+/*
+DIFERENCIA DE LISTAS
+*/
+conc([],L,R).
+conc([Car|Cdr],L,[Car|R]):-con(Cdr,L,R).
+:-op(600, xfy, [\]).
+%X-Y+y-Z=X-Z
+concat(X\Y,Y\Z,X\Z).
+% Llamada=concat([1,2]\[],X\X,L\S).
+
+/*
+APLANAR
+aplanar([],[]).
+aplanar(Atomo,[Atomo]):-atomic(Atomo)\==[].
+aplanar([Car|Cdr],R):-aplanar(Car,Car_aplanado),aplanar(Cdr,Cdr_aplanado),append(Car_aplanado,Cdr_aplanado,R).
+*/
+aplan(L,R):-aplan_dl(L,R\[]).
+% llamada=aplan_dl([1,[2,3,4],[[1]]],R).
+aplan_dl([],X\X).
+aplan_dl(Atomo,[Atomo|X]\X):-atomic(Atomo),Atomo\==[].
+aplan_dl([Car|Cdr],X\Z):-aplan_dl(Car,X\Y),aplan_dl(Cdr,Y\Z).
+
+/*
+INVERSO
+inv([],[]).
+inv([Car|Cdr],R):-inv(Cdr,R1),append(R1,[Car],R).
+*/
+invplan(L,R):-inv_dl(L,R\[]).
+inv_dl([],X\X).
+inv_dl([Car|Cdr],X\Y):-inv_dl(Cdr,X\[Car|Y]).
+
+/*
+LINEA
+linea(E,[],[]).
+linea(E,[Car|Cdr],[E,Car]|Cdr):-linea(E,Cdr,Cdr).
+*/
+
+lineaplan(E,L,R):-lineaplan(E,L,R\[]).
+linea_dl(E,[],X\X).
+linea_dl(E,[Car|Cdr],[[E,Car]|X]\Y):-linea_dl(E,Cdr,X\Y).
+linea_dl(E,[Car|Cdr],X\Y):-linea_dl(E,Cdr,[[E,Car]|X]\Y).
+%Tendria que ponerle solo el car delante de mi X\Y que seria mi lista, por unificacion y=[]
+
+/*
+CARTESIANO
+cartesiano([],C,[]).
+cartesiano([Car|Cdr],Conjunto,R):-linea(Car,Conjunto,L),cartesiano(Cdr,Conjunto,Resto),append(L,Resto,R).
+*/
+
+cartesianoplan(L1,L2,R):-cartdl(L1,L2,R\[]).
+cartdl([],C,X\X).
+cartdl([Car|Cdr],Conjunto,L\Z):-linea_dl(Car,Conjunto,L\CR),cartdl(Cdr,Conjunto,CR\Z).
+
+/*
+QUICKSORT
+*/
+partir(P,[],[]).
+partir(P,[Car|Cdr],[Car|Izq],Der):-Car<P,!,partir(P,Cdr,Izq,Der).
+partir(P,[Car|Cdr],Izq,[Car|Der]):-partir(P,Cdr,Izq,Der).
+
+quicksort([],[]).
+quicksort([Car|Cdr],R):-partir(Car,Cdr,Izq,Der),quicksort(Izq,Izq_O),quicksort(Der,Der_O),concat(Izq_O,[Car|Der_O],R).
+
+quickplan(L,R):-qdl(L,R\[]).
+qdl([],X\X).
+qdl([Car|Cdr],X\Z):-partir(Car,Cdr,Izq,Der),qdl(Izq,X\[Car|Y]),qdl(Der,Y\Z).
+
+%MIRAR INORDEN, POSTORDEN Y PREORDEN

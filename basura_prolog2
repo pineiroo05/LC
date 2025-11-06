@@ -1,0 +1,32 @@
+/*
+carl2_1(Lista, Sublista), en el original se pide la sublista de 2 elem, seguida de una sublista de 1.
+Con atomic vamos a buscar la sublista de 2 seguida de un elemento atomico.
+*/
+
+carl2_1([[Car1,Car2],E|_],[Car1,Car2]):-atomic(E),!.
+carl2_1([_|Cdr],R):-carl2_1(Cdr,R).
+
+borrar-pre(E,[],[]):-!.
+borrar-pre(E,[Car,E|Cdr],[E|R]):-!,borrar-pre(E,Cdr,R).
+borrar-pre(E,[Car|Cdr],[Car|R]):-borrar-pre(E,Cdr,R).
+
+insertar-entre(E,E1,E2,[],[]):-!.
+insertar-entre(E,E1,E2,[E1,E2|Cdr],[E1,E,E2|R]):-!,insertar-entre(E,E1,E2,Cdr,R).
+insertar-entre(E,E1,E2,[Car|Cdr],[Car|R]):-insertar-entre(E,E1,E2,Cdr,R).
+
+carl3([[Car1,E,Car2]|_],[Car1,E,Car2]):-atomic(E),!.
+carl3([_|Cdr],R):-carl3(Cdr,R).
+
+car1_l2([E,[Car1,Car2]|_],[Car1,Car2]):-atomic(E),!.
+car1_l2([_|Cdr],R):-car1_l2(Cdr,R).
+
+intercalar([],L2,L2):-!.
+intercalar(L1,[],L1):-!.
+intercalar([Car1|Cdr1],[Car2|Cdr2],[Car1,Car2,Car2|R]):-intercalar(Cdr1,Cdr2,R).
+
+duplicar_pares([],[]):-!.
+duplicar_pares([Car],[Car]):-!.
+duplicar_pares([Car1,Car2|Cdr],[Car1,Car2,Car2|R]):-duplicar_pares(Cdr,R).
+
+carl2_l1([E,[Car1,Car2]|_],E):-atomic(E),!.
+carl2_l1([_|Cdr],R):-carl2_l1(Cdr,R).

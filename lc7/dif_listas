@@ -7,6 +7,10 @@ EJERCICIO APLANAR
 aplanar([],[]).
 aplanar(Atomo,[Atomo]):-atomic(Atomo)\==[].
 aplanar([Car|Cdr],R):-aplanar(Car,Car_aplanado),aplanar(Cdr,Cdr_aplanado),append(Car_aplanado,Cdr_aplanado,R).
+
+aplanar([],R). R=[].
+aplanar([1,2,3,4],R). R=[1, 2, 3, 4].
+aplanar([1,2,3,[4]],R). R=[1, 2, 3, 4].
 */
 
 aplanar(L,R):-aplanar_dl(L,R-[]).

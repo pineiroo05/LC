@@ -9,8 +9,8 @@ aplanar(Atomo,[Atomo]):-atomic(Atomo)\==[].
 aplanar([Car|Cdr],R):-aplanar(Car,Car_aplanado),aplanar(Cdr,Cdr_aplanado),append(Car_aplanado,Cdr_aplanado,R).
 
 aplanar([],R). R=[].
-aplanar([1,2,3,4],R). R=[1, 2, 3, 4].
-aplanar([1,2,3,[4]],R). R=[1, 2, 3, 4].
+aplanar([1,2,3,4],R). R=[1,2,3,4].
+aplanar([1,2,3,[4]],R). R=[1,2,3,4].
 */
 
 aplanar(L,R):-aplanar_dl(L,R-[]).
@@ -22,6 +22,9 @@ aplanar_dl([Car|Cdr],X-Z):-aplanar_dl(Car,X-Y),aplanar_dl(Cdr,Y-Z).
 EJERCICIO INVERSO
 inverso([],[]).
 inverso([Car|Cdr],R]):-inverso(Cdr,R1),append(R1,[Car],R).
+
+inverso([],R). R=[].
+inverso([1,2,3,4],R). R=[4,3,2,1].
 */
 
 inverso(L,R):-inverso_dl(L,R-[]).

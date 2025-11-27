@@ -131,8 +131,8 @@ X = [c, e, g, f, d, b, i, k, m|...] .
 
 posorden(Arbol,Posorden):-podorden_dl(Arbol,Posorden-[]).
 posorden_dl(arbol(A,nil,nil),[A|X]-X):-!.
-posorden_dl(arbol(A,I,nil),S-X):-posorden_dl(I,S-[A|X]).
-posorden_dl(arbol(A,nil,D),S-X):-posorden_dl(D,S-[A|X]).
+posorden_dl(arbol(A,I,nil),S-X):-posorden_dl(I,S-[A|X]),!.
+posorden_dl(arbol(A,nil,D),S-X):-posorden_dl(D,S-[A|X]),!.
 posorden_dl(arbol(A,I,D),S-T):-posorden_dl(I,S-X),posorden_dl(D,X-[A|T]).
 */
 

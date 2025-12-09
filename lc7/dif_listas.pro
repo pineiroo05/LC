@@ -1,0 +1,186 @@
+/*
+DIFERENCIA DE LISTAS
+*/
+
+/*
+EJERCICIO APLANAR
+aplanar([],[]).
+aplanar(Atomo,[Atomo]):-atomic(Atomo)\==[].
+aplanar([Car|Cdr],R):-aplanar(Car,Car_aplanado),aplanar(Cdr,Cdr_aplanado),append(Car_aplanado,Cdr_aplanado,R).
+
+aplanar([],R). R=[].
+aplanar([1,2,3,4],R). R=[1,2,3,4].
+aplanar([1,2,3,[4]],R). R=[1,2,3,4].
+*/
+
+aplanar(L,R):-aplanar_dl(L,R-[]).
+aplanar_dl([],X-X):-!.
+aplanar_dl(Atomo,[Atomo|X]-X):-atomic(Atomo),Atomo\==[].
+aplanar_dl([Car|Cdr],X-Z):-aplanar_dl(Car,X-Y),aplanar_dl(Cdr,Y-Z).
+
+/*
+EJERCICIO INVERSO
+inverso([],[]).
+inverso([Car|Cdr],R]):-inverso(Cdr,R1),append(R1,[Car],R).
+
+inverso([],R). R=[].
+inverso([1,2,3,4],R). R=[4,3,2,1].
+*/
+
+inverso(L,R):-inverso_dl(L,R-[]).
+inverso_dl([],X-X).
+inverso_dl([Car|Cdr],X-Y):-inverso_dl(Cdr,X-[Car|Y]).
+
+/*
+EJERCICIO LINEA
+linea(E,[],[]).
+linea(E,[Car|Cdr],[E,Car|Cdr]):-linea(E,Cdr,Cdr).
+*/
+
+linea(E,L,R):-linea_dl(E,L,R-[]).
+linea_dl(E,[],X-X).
+linea_dl(E,[Car|Cdr],[[E,Car|Cdr]|X]-Y):-linea_dl(E,Cdr,X-Y).
+linea_dl(E,[Car|Cdr],X-Y):-linea_dl(E,Cdr,[[E,Car]|X]-Y).
+
+/*
+-----OJO LA RAIZ DE LOS ARBOLES SIEMPRE ES LA S-----
+*/
+
+/*
+EJERCICIO INORDEN BINARIO -> recorre el arbol haciendo izquierda, raiz, derecha
+
+inorden(Arbol-binario,Inorden) se verifica si Inorden es la lista de etiquetas del Arbol-binario recorrido en Inorden.
+Arbol vacio -> nil // arbol(Raiz,Izquierda,Derecha) // nodo hoja siempre q no tenga otros nodos
+
+Sin diferencia de listas:
+inorden(arbol(A,nil,nil),[A]):-!.
+inorden(arbol(A,X,nil),S) :- inorden(X,C),append(C,[A],S).
+inorden(arbol(A,nil,X),[A|S]) :-inorden(X,S).
+inorden(arbol(A,X,Y),S):-inorden(X,C),inorden(Y,F),append(C,[A],D), append(D,F,S).
+
+Ejemplos:
+inorden(arbol(a,nil,nil),X). X=[a].
+inorden(arbol(a,arbol(b,nil,nil),nil),X). X=[b, a]
+inorden(arbol(a,nil,arbol(b,nil,nil)),X). X=[a, b]
+inorden(arbol(a,arbol(b,arbol(c,nil, nil),arbol(d,arbol(e,nil,nil),arbol(f,nil,arbol(g,nil,nil)))),arbol(h,arbol(i,nil, nil),arbol(j,arbol(k,nil,nil),arbol(l,nil,arbol(m,nil,nil))))),X).
+X=[c, b, e, d, f, g, a, i, h|...]
+*/
+
+inorden(Arbol,Inorden):-inorden_dl(Arbol,Inorden-[]).
+inorden_dl(arbol(A,nil,nil),[A|X]-X):-!.
+inorden_dl(arbol(A,I,nil),S-X):-inorden_dl(I,S-[A|X]).
+inorden_dl(arbol(A,nil,D),[A|S]-X):-inorden_dl(D,S-X).
+inorden_dl(arbol(A,I,D),S-F):-inorden_dl(I,S-[A|X]),inorden_dl(D,X-F).
+
+
+/*
+EJERCICIO PREORDEN BINARIO -> recorre el arbol haciendo raiz, izquierda, derecha.
+
+preorden(Arbol-binario,Preorden) se verifica si Preorden es la lista de etiquetas de Arbol-Binario recorridas en preorden.
+Arbol vacio -> nil // arbol(Raiz,Izquierda,Derecha) // nodo hoja siempre q no tenga otros nodos
+
+Sin diferencia de listas:
+preorden(arbol(A,nil,nil),[A]) :-!.
+preorden(arbol(A,X,nil),[A|S]) :- preorden(X,S),!.
+preorden(arbol(A,nil,X),[A|S]) :- preorden(X,S),!.
+preorden(arbol(A,X,Y),[A|S]) :- preorden(X,T),preorden(Y,O),!,append(T,O,S).
+
+Ejemplos:
+preorden(arbol(a,nil,nil),X). X=[a].
+preorden(arbol(a,arbol(b,nil,nil),nil),X). X=[a, b].
+preorden(arbol(a,nil,arbol(b,nil,nil)),X). X=[a, b].
+preorden(arbol(a,arbol(b,arbol(c,nil, nil), 
+                            arbol(d,arbol(e,nil,nil),
+                                    arbol(f,nil,arbol(g,nil,nil)))),
+                    arbol(h,arbol(i,nil, nil), 
+                            arbol(j,arbol(k,nil,nil),
+                                    arbol(l,nil,arbol(m,nil,nil))))),X).
+X = [a, b, c, d, e, f, g, h, i|...].
+*/
+
+preorden(Arbol,Preorden):-preorden_dl(Arbol,Preorden-[]).
+preorden_dl(arbol(A,nil,nil),[A|X]-X):-!.
+preorden_dl(arbol(A,I,nil),[A|S]-X):-preorden_dl(I,S-X),!.
+preorden_dl(arbol(A,nil,D),[A|S]-X):-preorden_dl(D,S-X),!.
+preorden_dl(arbol(A,I,D),[A|S]-T):-preorden_dl(I,S-X),preorden_dl(D,X-T).
+
+
+/*
+EJERCICIO POSORDEN BINARIO -> recorre el arbol haciendo izquierda, derecha, raiz.
+
+posorden(Arbol-binario,Posorden) se verifica si Posorden es la lista de etiquetas de Arbol-Binario recorridas en posorden.
+Arbol vacio -> nil // arbol(Raiz,Izquierda,Derecha) // nodo hoja siempre que no tenga otros nodos.
+
+Sin diferencia de listas:
+posorden(arbol(A,nil,nil),[A]):-!.
+posorden(arbol(A,X,nil),S):-posorden(X,C),append(C,[A],S).
+posorden(arbol(A,nil,X),S):-posorden(X,C),append(C,[A],S).
+posorden(arbol(A,X,Y),S):-posorden(X,C),posorden(Y,F),append(C,F,D),append(D,[A],S).
+
+Ejemplos:
+posorden(arbol(a,nil,nil),X). X=[a]
+posorden(arbol(a,arbol(b,nil,nil),nil),X). X=[b, a] 
+posorden(arbol(a,nil,arbol(b,nil,nil)),X). X=[b, a]
+posorden(arbol(a,arbol(b,arbol(c,nil, nil), 
+                            arbol(d,arbol(e,nil,nil),
+                                    arbol(f,nil,arbol(g,nil,nil)))),
+                    arbol(h,arbol(i,nil, nil), 
+                            arbol(j,arbol(k,nil,nil),
+                                    arbol(l,nil,arbol(m,nil,nil))))),X).
+X = [c, e, g, f, d, b, i, k, m|...] .
+
+posorden(Arbol,Posorden):-podorden_dl(Arbol,Posorden-[]).
+posorden_dl(arbol(A,nil,nil),[A|X]-X):-!.
+posorden_dl(arbol(A,I,nil),S-X):-posorden_dl(I,S-[A|X]),!.
+posorden_dl(arbol(A,nil,D),S-X):-posorden_dl(D,S-[A|X]),!.
+posorden_dl(arbol(A,I,D),S-T):-posorden_dl(I,S-X),posorden_dl(D,X-[A|T]).
+*/
+
+posorden(Arbol,Posorden) :- posorden_dl(Arbol, Posorden-[]).
+posorden_dl(arbol(A,nil,nil),[A|X]-X):-!.
+posorden_dl(arbol(A,I,nil),S-X):-posorden_dl(I,S-[A|X]).
+posorden_dl(arbol(A,nil,D),S-X):-posorden_dl(D,S-[A|X]).
+posorden_dl(arbol(A,I,D),S-T):-posorden_dl(I,S-X),posorden_dl(D,X-[A|T]).
+
+
+/*
+EJERCICIO POSORDEN N-ARIO -> el recorrido es subhijos1, hijo1, subhijos2, hijo2,...,raiz (visito los hijos de izq a dcha y por ultimo la raiz)
+
+Sin diferencia de listas:
+posord(arbol(X,F),Seq):-posord_hijos(F,SeqF),append(SeqF,[X],Seq).
+posord_hijos([],[]).
+posord_hijos([T|Ts],Seq):-posord(T,SeqT),posord_hijos(Ts,SeqTs),append(SeqT,SeqTs,Seq).
+
+Ejemplos:
+posord(arbol(a,[]),X). X=[a].
+posord(arbol(a,[arbol(b,[]),arbol(c,[]),arbol(d,[])]),X). X=[b, c, d, a].
+posord(arbol(a,[arbol(b,[arbol(x,[arbol(y,[])])]),arbol(c,[]),arbol(d,[])]),X). X=[y, x, b, c, d, a].
+*/
+
+posord(Arbol,Seq):-posord_dl(Arbol,Seq-[]).
+posord_dl(arbol(A,B),Seq-X):-posord_hijos_dl(B,Seq-[A|X]).
+posord_hijos_dl([],X-X).
+posord_hijos_dl([T|Ts],Seq-X):-posord_dl(T,Seq-Y),posord_hijos_dl(Ts,Y-X).
+
+/*
+EJERCICIO PREORDEN N-ARIO -> el recorrido es raiz, hijo1, subhijos1, hijo2, subhijos2,...,hijoN, subhijosN (visito la raiz, y despues todos los hijos de izq a dcha).
+
+Sin diferencia de listas:
+preord(arbol(X,F),Seq):-
+        preord_hijos(F,SeqF), %Recorre todos los Hijos (F) para obtener la secuencia de hijos (SeqF).
+        append([X],SeqF,Seq). %Concatena la Raíz ([X]) con la secuencia de Hijos (SeqF).
+preord_hijos([],[]).
+preord_hijos([T|Ts],Seq):-
+        preord_hijos(T,SeqT), %Recorre el primer Hijo (T) en Preorden para obtener SeqT.
+        preord_hijos(Ts,SeqTs), %Recorre el Resto de los Hijos (Ts) para obtener SeqTs.
+        append(SeqT,SeqTs,Seq). %El resultado del primer hijo (SeqT) va seguido del resultado del resto (SeqTs).
+
+Ejemplos:
+preord(arbol(a,[]),X). X=[a].
+preord(arbol(c,[arbol(a,[]),arbol(b,[])]),X). X=[c, a, b].
+*/
+
+preord(Arbol,Seq):-preord_dl(Arbol,Seq-[]).
+preord_dl(arbol(A,B),[A|X]-Seq):-preord_hijos_dl(B,X-Seq).
+preord_hijos_dl([],X-X).
+preord_hijos_dl([T|Ts],Seq-Y):-preord_dl(T,Seq-X),preord_hijos_dl(Ts,X-Y).
